@@ -776,7 +776,7 @@ function detectFightProbability() {
 }
 
 // AI Love Advisor Chat
-function sendChatMessage() {
+async function sendChatMessage() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
     
@@ -786,11 +786,163 @@ function sendChatMessage() {
     addChatMessage(message, 'user');
     input.value = '';
     
-    // Simulate AI response
-    setTimeout(() => {
-        const response = generateAIResponse(message);
+    // Show loading indicator
+    const container = document.getElementById('chatMessages');
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'ai-message';
+    loadingDiv.innerHTML = `
+        <span class="ai-avatar">🤖</span>
+        <div class="message-bubble">Thinking...</div>
+    `;
+    container.appendChild(loadingDiv);
+    container.scrollTop = container.scrollHeight;
+    
+    try {
+        // Try free AI API first
+        const response = await getAIResponse(message);
+        
+        // Remove loading indicator
+        container.removeChild(loadingDiv);
+        
+        // Add AI response
         addChatMessage(response, 'ai');
-    }, 1000);
+    } catch (error) {
+        // Remove loading indicator
+        container.removeChild(loadingDiv);
+        
+        // Use intelligent local AI response
+        const response = getIntelligentResponse(message);
+        addChatMessage(response, 'ai');
+    }
+}
+
+// Intelligent Local AI System (works without API key)
+let conversationContext = [];
+let userName = '';
+let partnerName = '';
+
+function getIntelligentResponse(message) {
+    const lowerMessage = message.toLowerCase().trim();
+    
+    // Add to conversation history
+    conversationContext.push({ role: 'user', message: message });
+    if (conversationContext.length > 10) {
+        conversationContext = conversationContext.slice(-10);
+    }
+    
+    // Check for name mentions
+    const nameMatch = message.match(/(?:my name is|i am|i'm)\s+(\w+)/i);
+    if (nameMatch) {
+        userName = nameMatch[1];
+    }
+    const partnerMatch = message.match(/(?:partner|boyfriend|girlfriend|husband|wife|lover)\s+(\w+)/i);
+    if (partnerMatch) {
+        partnerName = partnerMatch[1];
+    }
+    
+    // Generate contextual response
+    let response = generateContextualResponse(lowerMessage);
+    
+    // Add to history
+    conversationContext.push({ role: 'bot', message: response });
+    
+    return response;
+}
+
+function generateContextualResponse(message) {
+    // Check for greetings first
+    if (isGreeting(message)) {
+        return getGreetingResponse();
+    }
+    
+    // Check for questions about the bot
+    if (message.includes('who are you') || message.includes('what are you')) {
+        return "I'm your AI Love Advisor Bot! I'm here to help you with any questions about love, relationships, dating, marriage, or anything related to matters of the heart. 💕";
+    }
+    
+    // Check for thanks/gratitude
+    if (message.includes('thank') || message.includes('thanks') || message.includes('appreciate')) {
+        const thanksResponses = [
+            "You're welcome! I'm always here to help with your relationship questions. Is there anything else you'd like to know? 💕",
+            "Happy to help! Remember, love is a beautiful journey. Feel free to ask more questions! ❤️",
+            "Anytime! Good relationships take work, but they're so worth it. Anything else I can help with? ✨"
+        ];
+        return thanksResponses[Math.floor(Math.random() * thanksResponses.length)];
+    }
+    
+    // Check for goodbye
+    if (message.includes('bye') || message.includes('goodbye') || message.includes('see you')) {
+        return "Goodbye! Remember to cherish the love you have. Take care and best of luck with your relationship! 💖";
+    }
+    
+    // Use the keyword-based response system with enhancements
+    return generateAIResponse(message);
+}
+
+function isGreeting(message) {
+    const greetings = ['hello', 'hi', 'hey', 'good morning', 'good evening', 'good night', 'what up', 'howdy', 'sup'];
+    return greetings.some(g => message.includes(g));
+}
+
+function getGreetingResponse() {
+    const greetings = [
+        "Hello! 💕 I'm your AI Love Advisor. I'm here to help you with any relationship questions. What would you like to talk about?",
+        "Hey there! ❤️ I'm happy to chat about love and relationships. What's on your mind?",
+        "Hi! ✨ I'm your love advisor bot. Feel free to ask me anything about relationships, dating, or marriage!"
+    ];
+    return greetings[Math.floor(Math.random() * greetings.length)];
+}
+
+// Free AI API Integration (using public endpoints)
+async function getAIResponse(userMessage) {
+    // Try using a public AI endpoint
+    // Note: This may not work without API key, fallback will be used
+    
+    const requestBody = {
+        messages: [
+            {
+                role: "system",
+                content: "You are a helpful love and relationship advisor. Give friendly, supportive advice about love, dating, marriage, and relationships."
+            },
+            {
+                role: "user",
+                content: userMessage
+            }
+        ]
+    };
+    
+    try {
+        // Try different free endpoints
+        const endpoints = [
+            'https://api.chatanywhere.com/v1/chat/completions',
+            'https://api.openchatanywhere.com/v1/chat/completions'
+        ];
+        
+        for (const endpoint of endpoints) {
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.choices && data.choices[0] && data.choices[0].message) {
+                        return data.choices[0].message.content;
+                    }
+                }
+            } catch (e) {
+                continue;
+            }
+        }
+    } catch (error) {
+        console.log('API call failed, using local AI');
+    }
+    
+    throw new Error('No API available');
 }
 
 function addChatMessage(text, type) {
