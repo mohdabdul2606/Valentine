@@ -7,7 +7,11 @@ const resultsSection = document.getElementById('resultsSection');
 const darkModeToggle = document.getElementById('darkModeToggle');
 const musicToggle = document.getElementById('musicToggle');
 const bgMusic = document.getElementById('bgMusic');
+const lofiHigh = document.getElementById('lofiHigh');
+const lofiMedium = document.getElementById('lofiMedium');
+const lofiLow = document.getElementById('lofiLow');
 const fullscreenPopup = document.getElementById('fullscreenPopup');
+let currentLofi = null;
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
@@ -287,6 +291,9 @@ function getZodiacSign(dob) {
 function displayResults(compatibility, yourName, partnerName) {
     resultsSection.style.display = 'block';
     
+    // Play lofi based on compatibility
+    playLofiByCompatibility(compatibility.score);
+    
     // Animate score
     const score = compatibility.score;
     const meterFill = document.getElementById('meterFill');
@@ -444,14 +451,52 @@ function toggleDarkMode() {
 
 // Music Toggle
 function toggleMusic() {
-    if (bgMusic.paused) {
+    if (bgMusic.paused && !currentLofi) {
+        // Default music if no compatibility calculated yet
         bgMusic.play();
         musicToggle.classList.add('playing');
         musicToggle.querySelector('.music-icon').textContent = '🔊';
+    } else if (currentLofi) {
+        if (currentLofi.paused) {
+            currentLofi.play();
+            musicToggle.classList.add('playing');
+            musicToggle.querySelector('.music-icon').textContent = '🔊';
+        } else {
+            currentLofi.pause();
+            musicToggle.classList.remove('playing');
+            musicToggle.querySelector('.music-icon').textContent = '🎵';
+        }
     } else {
         bgMusic.pause();
         musicToggle.classList.remove('playing');
         musicToggle.querySelector('.music-icon').textContent = '🎵';
+    }
+}
+
+// Play lofi based on compatibility score
+function playLofiByCompatibility(score) {
+    // Stop all other music
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    lofiHigh.pause();
+    lofiHigh.currentTime = 0;
+    lofiMedium.pause();
+    lofiMedium.currentTime = 0;
+    lofiLow.pause();
+    lofiLow.currentTime = 0;
+    
+    // Select appropriate lofi track
+    if (score >= 70) {
+        currentLofi = lofiHigh;
+    } else if (score >= 50) {
+        currentLofi = lofiMedium;
+    } else {
+        currentLofi = lofiLow;
+    }
+    
+    // Auto-play if music toggle is on
+    if (musicToggle.classList.contains('playing')) {
+        currentLofi.play();
     }
 }
 
