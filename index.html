@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Love Compatibility 💘</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="hearts-bg" id="heartsBg"></div>
+    
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle Dark Mode">
+        <span class="toggle-icon">🌙</span>
+    </button>
+
+    <!-- Music Toggle -->
+    <button class="music-toggle" id="musicToggle" aria-label="Toggle Music">
+        <span class="music-icon">🎵</span>
+    </button>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-content">
+                <h1 class="title">💘 Valentine Love Compatibility 💘</h1>
+                <p class="subtitle">Discover your romantic destiny</p>
+            </div>
+            <div class="heart-animation">
+                <div class="pulse-heart">❤️</div>
+            </div>
+        </header>
+
+        <!-- Input Form Section -->
+        <section class="input-section glass-card" id="inputSection">
+            <h2>Enter Your Love Details</h2>
+            <form id="loveForm">
+                <div class="form-group">
+                    <label for="yourName">Your Name</label>
+                    <input type="text" id="yourName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="partnerName">Partner's Name</label>
+                    <input type="text" id="partnerName" placeholder="Enter partner's name" required>
+                </div>
+                <div class="form-group">
+                    <label for="yourDob">Your Date of Birth</label>
+                    <input type="date" id="yourDob" required>
+                </div>
+                <div class="form-group">
+                    <label for="partnerDob">Partner's Date of Birth</label>
+                    <input type="date" id="partnerDob" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    Check Love Compatibility 💘
+                </button>
+            </form>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <!-- Compatibility Score -->
+            <div class="compatibility-result glass-card" id="compatibilityResult">
+                <div class="result-header">
+                    <h2>💕 Love Compatibility Score 💕</h2>
+                </div>
+                <div class="score-display">
+                    <div class="love-meter">
+                        <div class="meter-fill" id="meterFill"></div>
+                        <div class="meter-needle" id="meterNeedle"></div>
+                    </div>
+                    <div class="score-text">
+                        <span class="score-number" id="scoreNumber">0</span>
+                        <span class="score-percent">%</span>
+                    </div>
+                </div>
+                <div class="result-message" id="resultMessage"></div>
+                <div class="romantic-emojis" id="romanticEmojis"></div>
+                
+                <!-- Share Buttons -->
+                <div class="share-buttons">
+                    <button class="btn-share whatsapp" id="shareWhatsapp">
+                        <span>📱</span> Share on WhatsApp
+                    </button>
+                    <button class="btn-share" id="downloadPdf">
+                        <span>📄</span> Download Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Romantic Message -->
+            <div class="romantic-message glass-card" id="romanticMessage">
+                <h3>💌 Love Message</h3>
+                <p id="loveMessage"></p>
+            </div>
+
+            <!-- Relationship Report -->
+            <div class="relationship-report glass-card" id="relationshipReport">
+                <h3>📊 Relationship Report</h3>
+                <div class="report-grid">
+                    <div class="report-item">
+                        <div class="report-label">
+                            <span>Emotional Compatibility</span>
+                            <span class="report-value" id="emotionalValue">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="emotionalProgress"></div>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <div class="report-label">
+                            <span>Trust Level</span>
+                            <span class="report-value" id="trustValue">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="trustProgress"></div>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <div class="report-label">
+                            <span>Communication Strength</span>
+                            <span class="report-value" id="communicationValue">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="communicationProgress"></div>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <div class="report-label">
+                            <span>Long-term Potential</span>
+                            <span class="report-value" id="longTermValue">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="longTermProgress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overall-status">
+                    <h4>Overall Relationship Status</h4>
+                    <p id="overallStatus"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Timeline Section -->
+        <section class="timeline-section glass-card" id="timelineSection">
+            <h3>🕰️ Couple Memory Timeline</h3>
+            <div class="timeline-controls">
+                <button class="btn-secondary" id="addMemoryBtn">+ Add Memory</button>
+            </div>
+            <div class="timeline" id="timeline">
+                <div class="timeline-item" data-date="First Meet">
+                    <div class="timeline-marker">👀</div>
+                    <div class="timeline-content">
+                        <h4>First Meet</h4>
+                        <input type="date" class="memory-date" data-type="firstMeet" value="2026-02-12">
+                        <span class="date-display" id="firstMeetDisplay">12-02-2026</span>
+                    </div>
+                </div>
+                <div class="timeline-item" data-date="First Chat">
+                    <div class="timeline-marker">💬</div>
+                    <div class="timeline-content">
+                        <h4>First Chat</h4>
+                        <input type="date" class="memory-date" data-type="firstChat">
+                        <span class="date-display" id="firstChatDisplay">dd-mm-yyyy</span>
+                    </div>
+                </div>
+                <div class="timeline-item" data-date="First Fight">
+                    <div class="timeline-marker">😄</div>
+                    <div class="timeline-content">
+                        <h4>First Fight</h4>
+                        <input type="date" class="memory-date" data-type="firstFight">
+                        <span class="date-display" id="firstFightDisplay">dd-mm-yyyy</span>
+                    </div>
+                </div>
+                <div class="timeline-item" data-date="First Trip">
+                    <div class="timeline-marker">✈️</div>
+                    <div class="timeline-content">
+                        <h4>First Trip</h4>
+                        <input type="date" class="memory-date" data-type="firstTrip">
+                        <span class="date-display" id="firstTripDisplay">dd-mm-yyyy</span>
+                    </div>
+                </div>
+                <div class="timeline-item" data-date="Special Moment">
+                    <div class="timeline-marker">✨</div>
+                    <div class="timeline-content">
+                        <h4>Special Moment</h4>
+                        <input type="date" class="memory-date" data-type="specialMoment">
+                        <span class="date-display" id="specialMomentDisplay">dd-mm-yyyy</span>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-memories" id="customMemories"></div>
+        </section>
+
+        <!-- Secret Message Locker Section -->
+        <section class="locker-section glass-card" id="lockerSection">
+            <h3>🔒 Secret Valentine Message Locker</h3>
+            <div class="locker-form" id="lockerForm">
+                <div class="form-group">
+                    <label for="secretMessage">Write Your Secret Love Message</label>
+                    <textarea id="secretMessage" placeholder="Write something special..." rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="unlockDate">Unlock Date</label>
+                    <input type="date" id="unlockDate">
+                    <p class="hint">Select February 14 for Valentine's Day!</p>
+                </div>
+                <button class="btn-primary" id="lockMessage">🔐 Lock Message</button>
+            </div>
+            <div class="locked-message" id="lockedMessage" style="display: none;">
+                <div class="lock-icon">🔐</div>
+                <p>Message Locked Until <span id="lockedDate"></span></p>
+                <p class="countdown" id="countdown"></p>
+            </div>
+            <div class="unlocked-message" id="unlockedMessage" style="display: none;">
+                <div class="heart-burst" id="heartBurst">
+                    <span>❤️</span><span>💖</span><span>💗</span><span>💝</span><span>💘</span>
+                </div>
+                <p class="revealed-message" id="revealedMessage"></p>
+            </div>
+        </section>
+
+        <!-- Fight Probability Detector -->
+        <section class="fight-detector glass-card" id="fightDetector">
+            <h3>😄 Fight Probability Detector</h3>
+            <div class="detector-form" id="detectorForm">
+                <div class="form-group">
+                    <label for="communicationStyle">Communication Style</label>
+                    <select id="communicationStyle">
+                        <option value="calm">Calm 🧘</option>
+                        <option value="aggressive">Aggressive 😤</option>
+                        <option value="avoidant">Avoidant 🦔</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timeTogether">Time Spent Together (hours/week)</label>
+                    <input type="range" id="timeTogether" min="1" max="100" value="20">
+                    <span class="range-value" id="timeValue">20 hrs</span>
+                </div>
+                <div class="form-group">
+                    <label for="interestMatch">Interest Match (%)</label>
+                    <input type="range" id="interestMatch" min="0" max="100" value="50">
+                    <span class="range-value" id="interestValue">50%</span>
+                </div>
+                <button class="btn-secondary" id="detectFight">🔮 Predict Fight Probability</button>
+            </div>
+            <div class="fight-result" id="fightResult" style="display: none;">
+                <div class="fight-percentage">
+                    <span class="percentage" id="fightPercentage">0%</span>
+                    <span class="label">Chances of Fight</span>
+                </div>
+                <div class="suggestions" id="suggestions">
+                    <div class="suggestion-card">
+                        <span class="icon">💬</span>
+                        <p id="apologyMessage"></p>
+                    </div>
+                    <div class="suggestion-card">
+                        <span class="icon">🎁</span>
+                        <p id="giftIdea"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Love Advisor -->
+        <section class="ai-advisor glass-card" id="aiAdvisor">
+            <h3>🤖❤️ AI Love Advisor</h3>
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="ai-message">
+                        <span class="ai-avatar">🤖</span>
+                        <p>Hello! I'm your AI Love Advisor. Ask me anything about your relationship! 💕</p>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Ask about your relationship...">
+                    <button class="btn-send" id="sendMessage">Send 💌</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Full Screen Result Popup -->
+    <div class="fullscreen-popup" id="fullscreenPopup">
+        <div class="popup-content" id="popupContent">
+            <div class="popup-emoji" id="popupEmojis"></div>
+            <h2 class="popup-title" id="popupTitle"></h2>
+            <p class="popup-score" id="popupScore"></p>
+            <p class="popup-hint">Tap anywhere to close</p>
+        </div>
+    </div>
+
+    <!-- Audio Element for Music -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
