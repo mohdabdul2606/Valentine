@@ -814,24 +814,142 @@ function addChatMessage(text, type) {
 }
 
 function generateAIResponse(message) {
-    const responses = {
-        trust: "Trust is the foundation of any relationship. Be open, honest, and give your partner the benefit of the doubt. Communication is key to building trust! 💪",
-        communication: "Great communication involves both speaking and listening. Try to express your feelings without judgment and truly listen to understand, not just to respond! 💬",
-        love: "Love is a choice you make every day. It's not just a feeling - it's actions, patience, and choosing your partner even when it's hard. ❤️",
-        long: "Long-term relationships require effort from both sides. Keep the spark alive by continuing to date, showing appreciation, and never taking each other for granted! 💕",
-        fight: "Fights are normal in relationships! It's how you resolve conflicts that matters. Always aim to understand each other's perspective and find common ground. 🤝",
-        default: "Every relationship is unique! The most important thing is mutual respect, open communication, and a genuine desire to make things work. Trust your journey together! 💘"
-    };
-    
     const lowerMessage = message.toLowerCase();
     
-    if (lowerMessage.includes('trust')) return responses.trust;
-    if (lowerMessage.includes('communicat')) return responses.communication;
-    if (lowerMessage.includes('love')) return responses.love;
-    if (lowerMessage.includes('long') || lowerMessage.includes('future')) return responses.long;
-    if (lowerMessage.includes('fight') || lowerMessage.includes('conflict')) return responses.fight;
+    // Expanded keyword categories with multiple response variations
+    const responseCategories = {
+        trust: {
+            keywords: ['trust', 'believe', 'honest', 'faith', 'reliable', 'betray', 'cheat', 'loyal'],
+            responses: [
+                "Trust is the foundation of any relationship. Be open, honest, and give your partner the benefit of the doubt. Communication is key to building trust!",
+                "Building trust takes time - consistency in actions and words matters most. Small gestures of reliability build a strong foundation!",
+                "Trust is earned through transparency. Share your thoughts openly and your partner will feel safe doing the same!",
+                "If trust was broken, remember that rebuilding takes patience. Both partners need to demonstrate changed behavior over time!"
+            ]
+        },
+        communication: {
+            keywords: ['communicat', 'talk', 'listen', 'express', 'understand', 'misunderstand', 'silent', 'argue'],
+            responses: [
+                "Great communication involves both speaking and listening. Try to express your feelings without judgment and truly listen to understand, not just to respond!",
+                "Active listening is key! Put away distractions, maintain eye contact, and reflect back what you hear to ensure understanding!",
+                "Use I statements instead of You accusations. Say I feel hurt when... instead of You always... for better conversations!",
+                "Schedule regular check-ins with your partner. Dedicated time to talk about feelings prevents buildup of unresolved issues!"
+            ]
+        },
+        love: {
+            keywords: ['love', 'heart', 'romance', 'romantic', 'affection', 'care', 'like'],
+            responses: [
+                "Love is a choice you make every day. It is not just a feeling - it is actions, patience, and choosing your partner even when it is hard!",
+                "Love Languages matter! Discover whether your partner feels loved through words, time, gifts, acts of service, or physical touch!",
+                "Small romantic gestures often mean the most - a surprise note, holding hands, or cooking their favorite meal!",
+                "The spark in a relationship needs fuel! Keep the romance alive by trying new activities together and expressing appreciation daily!"
+            ]
+        },
+        long_term: {
+            keywords: ['long', 'future', 'marriage', 'commit', 'serious', 'permanent', 'forever', 'years'],
+            responses: [
+                "Long-term relationships require effort from both sides. Keep the spark alive by continuing to date, showing appreciation, and never taking each other for granted!",
+                "Planning for the future together strengthens bonds! Discuss goals, dreams, and create shared visions!",
+                "Sustained love requires intentionality. Celebrate milestones, keep learning about each other, and grow together!",
+                "Long-lasting relationships need both partners to prioritize the relationship. Make time for each other despite busy lives!"
+            ]
+        },
+        fight: {
+            keywords: ['fight', 'conflict', 'argue', 'argument', 'disagree', 'dispute', 'mad', 'angry', 'upset'],
+            responses: [
+                "Fights are normal in relationships! It is how you resolve conflicts that matters. Always aim to understand each other perspective and find common ground!",
+                "Take a breather during heated arguments. It is okay to pause and return to the conversation when calmer!",
+                "Never go to bed angry! But also never say things you will regret. Some conversations can wait for a better moment!",
+                "Focus on the issue, not the person. Use I feel statements and avoid character attacks during disagreements!"
+            ]
+        },
+        sorry: {
+            keywords: ['sorry', 'apologize', 'forgive', 'mistake', 'wrong', 'regret', 'apolog'],
+            responses: [
+                "A sincere apology acknowledges feelings, not just words. Say what you did, why it was wrong, and how you will prevent it!",
+                "Forgiveness is a gift you give yourself too. Holding onto grudges only hurts you more than the other person!",
+                "Saying sorry without change is empty. Show your commitment through altered behavior, not just words!",
+                "We all make mistakes. What matters is recognizing them, learning, and growing together as a couple!"
+            ]
+        },
+        jealousy: {
+            keywords: ['jealous', 'envy', 'insecure', 'security', 'possessive', 'controlling', 'trust issues'],
+            responses: [
+                "Jealousy often stems from insecurity, not love. Work on your self-worth and communicate your feelings openly!",
+                "Healthy relationships respect boundaries. If you feel jealous, examine the root cause and discuss it calmly with your partner!",
+                "Constant jealousy can push away the very person you want to keep. Focus on building trust rather than control!",
+                "Communication is key when feeling insecure. Express your fears without accusing your partner of wrongdoing!"
+            ]
+        },
+        distance: {
+            keywords: ['distance', 'far', 'long distance', 'apart', 'missing'],
+            responses: [
+                "Long-distance relationships need extra effort! Schedule regular video calls, send surprise messages, and plan visits in advance!",
+                "Distance tests true feelings. Focus on the future together and use this time to strengthen emotional connection!",
+                "Stay connected through small gestures - good morning texts, voice notes, and sharing moments of your day!",
+                "Trust and communication are even more crucial in long-distance. Be transparent about your feelings and expectations!"
+            ]
+        },
+        breakup: {
+            keywords: ['breakup', 'break up', 'separate', 'end', 'leave', 'quit'],
+            responses: [
+                "Before making big decisions, reflect on whether the issues can be worked through. Every relationship has challenges!",
+                "If you have decided to end the relationship, be honest but kind. Ghosting is never the right approach!",
+                "Sometimes love is not enough. If you are considering a breakup, ensure it is for the right reasons, not temporary emotions!",
+                "Healing takes time after a breakup. Focus on self-care, lean on support systems, and remember you deserve happiness!"
+            ]
+        },
+        compliment: {
+            keywords: ['beautiful', 'pretty', 'handsome', 'cute', 'attractive', 'gorgeous', 'amazing', 'wonderful', 'great'],
+            responses: [
+                "It is wonderful that you see the best in your partner! Expressing appreciation strengthens your bond!",
+                "Compliments go a long way! Tell your partner what you love about them - it boosts both your moods!",
+                "Seeing your partner beauty shows you are still in love. Keep expressing these feelings openly!",
+                "Your appreciation means everything! Regular compliments maintain the romance and connection in relationships!"
+            ]
+        },
+        questions: {
+            keywords: ['how', 'what', 'why', 'when', 'where', 'who'],
+            responses: [
+                "That is a great question about relationships! Every couple is unique, but the fundamentals remain: respect, communication, and commitment!",
+                "Relationships are complex and personal. Reflect on what feels right for you and your partner!",
+                "I encourage you to discuss this directly with your partner. Open conversations lead to better understanding!",
+                "There is no one-size-fits-all answer! Trust your instincts and prioritize both your happiness in the relationship!"
+            ]
+        },
+        greeting: {
+            keywords: ['hi', 'hello', 'hey', 'good morning', 'good night', 'good evening', 'what up'],
+            responses: [
+                "Hello! I am here to help with any relationship questions you have. What would you like to discuss?",
+                "Hey there! Love is a beautiful journey. What aspect of relationships would you like advice on?",
+                "Hi! I am your AI love advisor. Feel free to ask me anything about love, trust, or communication!",
+                "Welcome! I am here to help strengthen your relationship. What would you like to know?"
+            ]
+        }
+    };
     
-    return responses.default;
+    // Check each category for matching keywords
+    for (const [category, data] of Object.entries(responseCategories)) {
+        for (const keyword of data.keywords) {
+            if (lowerMessage.includes(keyword)) {
+                // Return a random response from the matching category
+                const randomIndex = Math.floor(Math.random() * data.responses.length);
+                return data.responses[randomIndex];
+            }
+        }
+    }
+    
+    // Default responses for unrecognized messages
+    const defaultResponses = [
+        "Every relationship is unique! The most important thing is mutual respect, open communication, and a genuine desire to make things work. Trust your journey together!",
+        "Love takes work, but it should also feel joyful. Focus on building trust, keeping the spark alive, and supporting each other growth!",
+        "I am here to help with relationship advice! Try asking about trust, communication, love languages, or common challenges couples face!",
+        "Every couple faces ups and downs - what is important is how you navigate them together. Be patient, communicate openly, and always choose kindness!",
+        "The best relationships are built on friendship too! Enjoy each other company, laugh together, and be each other biggest supporter!",
+        "Remember that love is not just about the good times, but about showing up for each other during the hard times too!"
+    ];
+    
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
 }
 
 // Share on WhatsApp
@@ -870,3 +988,4 @@ function downloadPDF() {
 
 // Initialize custom memories on load
 document.addEventListener('DOMContentLoaded', renderCustomMemories);
+
